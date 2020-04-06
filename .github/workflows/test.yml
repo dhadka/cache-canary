@@ -12,11 +12,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1.1.0
+    - name: Record start time
+      id: start-time
+      run: |
+        echo "##[set-output name=time;]$(date +%s)"
     - uses: actions/cache@v1
       id: cache
       with:
         path: ~/cache-folder
         key: ${{ runner.os }}-cache-canary
+    - name: Record stop time
+      id: stop-time
+      run: |
+        echo "##[set-output name=time;]$(date +%s)"
     - name: Create cache content
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
@@ -30,4 +38,13 @@ jobs:
         if [ "$size" != "$expected" ]; then
           echo "Invalid cache size. Was $size, expected $expected"
           exit 1
+        fi
+        
+        time_diff=(( ${{ steps.end-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))
+        time_limit=10
+        echo "Elapsed time: $time_diff"
+        if [ "$time_diff" -gt "$time_limit" ]; then
+          echo "Exceeded time limit of $time_limit sec"
+          exit 1
+        fi
       
