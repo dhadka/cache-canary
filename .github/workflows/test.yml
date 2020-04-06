@@ -1,0 +1,25 @@
+name: Test Cache
+
+on: [push]
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1.1.0
+    - uses: actions/cache@v1
+      id: cache
+      with:
+        path: ~/cache-folder
+        key: ${{ runner.os }}-cache-canary
+    - name: Create cache content
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        mkdir ~/cache-folder
+        dd if=/dev/urandom of=~/cache-folder/file.txt count=150 bs=1048576
+    - name: Check cache content
+      if: steps.cache.outputs.cache-hit = 'true'
+      run: |
+        size=du -b ~/cache-folder/file.txt | awk '{print $1}'
+        echo $size
+      
