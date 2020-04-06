@@ -40,10 +40,8 @@ jobs:
           exit 1
         fi
         
-        echo "${{ steps.start-time.outputs.time }} ${{ steps.stop-time.outputs.time }}"
         time_diff="$(( ${{ steps.stop-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))"
-        time_limit=20
-        echo "Elapsed time: $time_diff"
+        time_limit=1
         if [ "$time_diff" -gt "$time_limit" ]; then
           echo "Exceeded time limit of $time_limit sec"
           exit 1
