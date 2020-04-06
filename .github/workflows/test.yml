@@ -1,7 +1,9 @@
 name: Test Cache
 
 on:
-  push
+  push:
+    - branches:
+      - master
   schedule:
     - cron: '*/15 * * * *'
 
