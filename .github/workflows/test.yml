@@ -1,6 +1,9 @@
 name: Test Cache
 
-on: [push]
+on:
+  push
+  schedule:
+    - cron: '*/15 * * * *'
 
 jobs:
   Test:
