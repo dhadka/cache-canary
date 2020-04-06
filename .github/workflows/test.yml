@@ -18,8 +18,11 @@ jobs:
         mkdir ~/cache-folder
         dd if=/dev/urandom of=~/cache-folder/file.txt count=150 bs=1048576
     - name: Check cache content
-      if: steps.cache.outputs.cache-hit = 'true'
+      if: steps.cache.outputs.cache-hit == 'true'
       run: |
         size=du -b ~/cache-folder/file.txt | awk '{print $1}'
-        echo $size
+        expected="157286400"
+        if [ "$size" != "$expected" ]; then
+          echo "Invalid cache size. Was $size, expected $expected"
+          exit 1
       
