@@ -40,7 +40,7 @@ jobs:
           exit 1
         fi
         
-        time_diff=`(( ${{ steps.end-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))`
+        time_diff=`(( ${{ steps.stop-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))`
         time_limit=10
         echo "Elapsed time: $time_diff"
         if [ "$time_diff" -gt "$time_limit" ]; then
