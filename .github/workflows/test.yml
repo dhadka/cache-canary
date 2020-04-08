@@ -33,6 +33,9 @@ jobs:
       run: |
         ls -al ~
         ls -al ~/cache-folder
+        ls -al ~/work
+        ls -al ~/work/cache-canary
+        ls -al ~/work/cache-canary/cache-canary
         size=$(du -b ~/cache-folder/file.txt | awk '{print $1}')
         expected="157286400"
         if [ "$size" != "$expected" ]; then
