@@ -14,7 +14,7 @@ jobs:
       id: start-time
       run: |
         echo "##[set-output name=time;]$(date +%s)"
-    - uses: actions/cache@master
+    - uses: dhadka/cache@master
       id: cache
       with:
         path: ~/cache-folder
