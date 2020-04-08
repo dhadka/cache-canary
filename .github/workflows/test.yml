@@ -18,7 +18,7 @@ jobs:
       id: cache
       with:
         path: ~/cache-folder
-        key: ${{ runner.os }}-cache-canary
+        key: ${{ runner.os }}-cache-canary-2
     - name: Record stop time
       id: stop-time
       run: |
