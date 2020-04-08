@@ -34,12 +34,12 @@ jobs:
         pwd
         echo ~
         ls -al ~
-        size=$(du -b ~/cache-folder/file.txt | awk '{print $1}')
-        expected="157286400"
-        if [ "$size" != "$expected" ]; then
-          echo "Invalid cache size. Was $size, expected $expected"
-          exit 1
-        fi
+        #size=$(du -b ~/cache-folder/file.txt | awk '{print $1}')
+        #expected="157286400"
+        #if [ "$size" != "$expected" ]; then
+        #  echo "Invalid cache size. Was $size, expected $expected"
+        #  exit 1
+        #fi
         
         time_diff="$(( ${{ steps.stop-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))"
         time_limit=20
