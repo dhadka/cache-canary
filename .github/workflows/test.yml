@@ -34,8 +34,6 @@ jobs:
         pwd
         echo ~
         ls -al ~
-        ls -al /home/runner/work/_temp/
-        find /home/runner/work/_temp/ -name *.tar | xargs -I {} tar --list -f {}
         #size=$(du -b ~/cache-folder/file.txt | awk '{print $1}')
         #expected="157286400"
         #if [ "$size" != "$expected" ]; then
