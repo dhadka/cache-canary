@@ -32,7 +32,6 @@ jobs:
       if: steps.cache.outputs.cache-hit == 'true'
       run: |
         ls -al ~
-        ls -al ~/cache-folder
         ls -al ~/work
         ls -al ~/work/cache-canary
         ls -al ~/work/cache-canary/cache-canary
