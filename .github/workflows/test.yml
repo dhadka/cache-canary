@@ -31,6 +31,8 @@ jobs:
     - name: Check cache content
       if: steps.cache.outputs.cache-hit == 'true'
       run: |
+        pwd
+        echo ~
         ls -al ~
         ls -al ~/work
         ls -al ~/work/cache-canary
