@@ -28,7 +28,7 @@ jobs:
       if: steps.cache.outputs.cache-hit == 'true'
       run: |
         find ~/work/_temp -name "cache.tgz"
-        find ~/work/_temp -name "cache.tgz" | rm
+        find ~/work/_temp -name "cache.tgz" | xargs rm
         find ~/work/_temp -name "cache.tgz"
     - name: Create cache content
       if: steps.cache.outputs.cache-hit != 'true'
