@@ -33,8 +33,8 @@ jobs:
     - name: Create cache content
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        echo "Should not have a cache miss"
-        exit 1
+        #echo "Should not have a cache miss"
+        #exit 1
         mkdir -p ~/cache-folder
         dd if=/dev/urandom of=~/cache-folder/file.txt count=150 bs=1048576
     - name: Validate cache
