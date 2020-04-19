@@ -28,7 +28,7 @@ jobs:
       if: steps.cache.outputs.cache-hit == 'true'
       run: |
         find ~/work/_temp -name "cache.tgz"
-        find ~/work/_temp -name "cache.tgz" | xargs -I {} echo "Removing {}" && rm {}
+        find ~/work/_temp -name "cache.tgz" -exec rm -f {} \;
         find ~/work/_temp -name "cache.tgz"
     - name: Create cache content
       if: steps.cache.outputs.cache-hit != 'true'
