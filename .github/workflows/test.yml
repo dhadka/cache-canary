@@ -14,7 +14,7 @@ jobs:
       id: start-time
       run: |
         echo "##[set-output name=time;]$(date +%s)"
-    - uses: actions/cache@v1
+    - uses: dhadka/cache@timer
       id: cache
       with:
         fail-on-restore: true
@@ -24,17 +24,11 @@ jobs:
       id: stop-time
       run: |
         echo "##[set-output name=time;]$(date +%s)"
-    - name: Delete cache tarball
-      if: steps.cache.outputs.cache-hit == 'true'
-      run: |
-        find ~/work/_temp -name "cache.tgz"
-        find ~/work/_temp -name "cache.tgz" -exec rm -f {} \;
-        find ~/work/_temp -name "cache.tgz"
     - name: Create cache content
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        #echo "Should not have a cache miss"
-        #exit 1
+        echo "Should not have a cache miss"
+        exit 1
         mkdir -p ~/cache-folder
         dd if=/dev/urandom of=~/cache-folder/file.txt count=150 bs=1048576
     - name: Validate cache
