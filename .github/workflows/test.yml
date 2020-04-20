@@ -17,7 +17,6 @@ jobs:
     - uses: dhadka/cache@timer
       id: cache
       with:
-        fail-on-restore: true
         path: ~/cache-folder
         key: ${{ runner.os }}-cache-canary-2
     - name: Record stop time
