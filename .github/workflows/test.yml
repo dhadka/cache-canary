@@ -20,7 +20,7 @@ jobs:
     - uses: dhadka/cache@timer
       id: cache
       with:
-        path: ~/cache-folder
+        path: cache-folder
         key: ${{ runner.os }}-cache-canary-2
     - name: Record stop time
       id: stop-time
@@ -31,12 +31,12 @@ jobs:
       run: |
         #echo "Should not have a cache miss"
         #exit 1
-        mkdir -p ~/cache-folder
-        dd if=/dev/urandom of=~/cache-folder/file.txt count=150 bs=1048576
+        mkdir -p cache-folder
+        dd if=/dev/urandom of=cache-folder/file.txt count=150 bs=1048576
     - name: Validate cache
       if: steps.cache.outputs.cache-hit == 'true'
       run: |
-        size=$(du -b ~/cache-folder/file.txt | awk '{print $1}')
+        size=$(du -b cache-folder/file.txt | awk '{print $1}')
         expected="157286400"
         if [ "$size" != "$expected" ]; then
           echo "Invalid cache size. Was $size, expected $expected"
