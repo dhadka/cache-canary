@@ -6,47 +6,51 @@ on:
     - master
 
 jobs:
-  Test:
+  # End to end save and restore
+  test-save:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-18.04]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v1.1.0
-    - name: Record start time
-      id: start-time
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generate files in working directory
+      shell: bash
       run: |
-        echo "##[set-output name=time;]$(date +%s)"
-    - uses: dhadka/cache@timer
-      id: cache
+        mkdir -p test-cache
+        dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
+    - name: Save cache
+      uses: actions/cache@add-retries
       with:
-        path: cache-folder
-        key: ${{ runner.os }}-cache-canary-2
-    - name: Record stop time
-      id: stop-time
+        key: test-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+  test-restore:
+    needs: test-save
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Restore cache
+      uses: actions/cache@add-retries
+      with:
+        key: test-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+    - name: Verify cache files in working directory
+      shell: bash
       run: |
-        echo "##[set-output name=time;]$(date +%s)"
-    - name: Create cache content
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        echo "Should not have a cache miss"
-        exit 1
-        mkdir -p cache-folder
-        dd if=/dev/urandom of=cache-folder/file.txt count=150 bs=1048576
-    - name: Validate cache
-      if: steps.cache.outputs.cache-hit == 'true'
-      run: |
-        #size=$(du -b cache-folder/file.txt | awk '{print $1}')
+        if [ ! -f test-cache/file.txt ]; then
+            echo "Files not found"
+            exit 1
+        fi
+        #size=$(du -b test-cache/file.txt | awk '{print $1}')
         #expected="157286400"
         #if [ "$size" != "$expected" ]; then
         #  echo "Invalid cache size. Was $size, expected $expected"
         #  exit 1
         #fi
-        
-        time_diff="$(( ${{ steps.stop-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))"
-        time_limit=120
-        if [ "$time_diff" -gt "$time_limit" ]; then
-          echo "Exceeded time limit of $time_limit sec"
-          exit 1
-        fi
-      
