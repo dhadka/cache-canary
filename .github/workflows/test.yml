@@ -17,11 +17,11 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=2048 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=1024 bs=1048576
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
       with:
-        key: test-large2-${{ runner.os }}-${{ github.run_id }}
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
   test-restore:
     needs: test-save
@@ -36,7 +36,7 @@ jobs:
     - name: Restore cache
       uses: dhadka/cache@azure-blob-client
       with:
-        key: test-large2-${{ runner.os }}-${{ github.run_id }}
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
     - name: Verify cache files in working directory
       shell: bash
@@ -60,7 +60,7 @@ jobs:
       env:
         DISABLE_AZURE_SDK: true
       with:
-        key: test-large2-${{ runner.os }}-${{ github.run_id }}
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
     - name: Verify cache files in working directory
       shell: bash
