@@ -17,7 +17,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=1024 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=2000 bs=1048576
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
       with:
