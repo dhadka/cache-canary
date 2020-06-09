@@ -1,9 +1,6 @@
 name: Test Cache
 
-on:
-  push:
-    branches:
-    - master
+on: [push, pull_request]
 
 jobs:
   # End to end save and restore
@@ -20,15 +17,37 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=500 bs=1048576
+        echo "${{ hashFiles('test-cache/file.txt') }}"
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
-      env:
-        USE_AZCOPY: true
       with:
-        key: test-${{ runner.os }}-${{ github.run_id }}
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
-  test-restore:
+  test-restore-az-lib:
+    needs: test-save
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Restore cache
+      uses: dhadka/cache@azure-blob-client
+      with:
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+    - name: Verify cache files in working directory
+      shell: bash
+      run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
+        if [ ! -f test-cache/file.txt ]; then
+            echo "Files not found"
+            exit 1
+        fi
+  test-restore-http-client:
     needs: test-save
     strategy:
       matrix:
@@ -41,20 +60,63 @@ jobs:
     - name: Restore cache
       uses: dhadka/cache@azure-blob-client
       env:
-        USE_AZCOPY: true
+        DISABLE_AZURE_SDK: true
       with:
-        key: test-${{ runner.os }}-${{ github.run_id }}
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
     - name: Verify cache files in working directory
       shell: bash
       run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
         if [ ! -f test-cache/file.txt ]; then
             echo "Files not found"
             exit 1
         fi
-        #size=$(du -b test-cache/file.txt | awk '{print $1}')
-        #expected="157286400"
-        #if [ "$size" != "$expected" ]; then
-        #  echo "Invalid cache size. Was $size, expected $expected"
-        #  exit 1
-        #fi
+  test-restore-http-client-chunk:
+    needs: test-save
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Restore cache
+      uses: dhadka/cache@custom-download-chunk
+      env:
+        DISABLE_AZURE_SDK: true
+      with:
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+    - name: Verify cache files in working directory
+      shell: bash
+      run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
+        if [ ! -f test-cache/file.txt ]; then
+            echo "Files not found"
+            exit 1
+        fi
+  test-restore-azcopy:
+    needs: test-save
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Restore cache
+      uses: dhadka/cache@azcopy
+      with:
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+    - name: Verify cache files in working directory
+      shell: bash
+      run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
+        if [ ! -f test-cache/file.txt ]; then
+            echo "Files not found"
+            exit 1
+        fi
