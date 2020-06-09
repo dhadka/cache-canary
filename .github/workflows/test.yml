@@ -17,7 +17,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=1000 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=500 bs=1048576
         echo "${{ hashFiles('test-cache/file.txt') }}"
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
