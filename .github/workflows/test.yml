@@ -17,7 +17,8 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=2000 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=1000 bs=1048576
+        echo "${{ hashFiles('test-cache/file.txt') }}"
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
       with:
@@ -41,6 +42,7 @@ jobs:
     - name: Verify cache files in working directory
       shell: bash
       run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
         if [ ! -f test-cache/file.txt ]; then
             echo "Files not found"
             exit 1
@@ -65,6 +67,7 @@ jobs:
     - name: Verify cache files in working directory
       shell: bash
       run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
         if [ ! -f test-cache/file.txt ]; then
             echo "Files not found"
             exit 1
@@ -80,7 +83,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Restore cache
-      uses: dhadka/cache@azure-blob-client
+      uses: dhadka/cache@custom-download-chunk
       env:
         DISABLE_AZURE_SDK: true
       with:
@@ -89,6 +92,7 @@ jobs:
     - name: Verify cache files in working directory
       shell: bash
       run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
         if [ ! -f test-cache/file.txt ]; then
             echo "Files not found"
             exit 1
@@ -111,6 +115,7 @@ jobs:
     - name: Verify cache files in working directory
       shell: bash
       run: |
+        echo "${{ hashFiles('test-cache/file.txt') }}"
         if [ ! -f test-cache/file.txt ]; then
             echo "Files not found"
             exit 1
