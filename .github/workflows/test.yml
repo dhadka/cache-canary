@@ -69,6 +69,30 @@ jobs:
             echo "Files not found"
             exit 1
         fi
+  test-restore-http-client-chunk:
+    needs: test-save
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Restore cache
+      uses: dhadka/cache@azure-blob-client
+      env:
+        DISABLE_AZURE_SDK: true
+      with:
+        key: test-large-${{ runner.os }}-${{ github.run_id }}
+        path: test-cache
+    - name: Verify cache files in working directory
+      shell: bash
+      run: |
+        if [ ! -f test-cache/file.txt ]; then
+            echo "Files not found"
+            exit 1
+        fi
   test-restore-azcopy:
     needs: test-save
     strategy:
