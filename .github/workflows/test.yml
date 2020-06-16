@@ -23,8 +23,6 @@ jobs:
         dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
     - name: Save cache
       uses: dhadka/cache@azure-blob-client
-      env:
-        USE_AZCOPY: true
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
@@ -38,13 +36,19 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Record start time
+      id: start-time
+      run: |
+        echo "##[set-output name=time;]$(date +%s)"
     - name: Restore cache
       uses: dhadka/cache@azure-blob-client
-      env:
-        USE_AZCOPY: true
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
+    - name: Record stop time
+      id: stop-time
+      run: |
+        echo "##[set-output name=time;]$(date +%s)"
     - name: Verify cache files in working directory
       shell: bash
       run: |
@@ -52,9 +56,17 @@ jobs:
             echo "Files not found"
             exit 1
         fi
+        
         #size=$(du -b test-cache/file.txt | awk '{print $1}')
         #expected="157286400"
         #if [ "$size" != "$expected" ]; then
         #  echo "Invalid cache size. Was $size, expected $expected"
         #  exit 1
         #fi
+        
+        time_diff="$(( ${{ steps.stop-time.outputs.time }} - ${{ steps.start-time.outputs.time }} ))"
+        time_limit=120
+        if [ "$time_diff" -gt "$time_limit" ]; then
+          echo "Exceeded time limit of $time_limit sec"
+          exit 1
+        fi
