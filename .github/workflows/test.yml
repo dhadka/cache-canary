@@ -22,7 +22,7 @@ jobs:
         mkdir -p test-cache
         dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
     - name: Save cache
-      uses: dhadka/cache@azure-blob-client
+      uses: actions/cache@v2.1.0
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
@@ -41,7 +41,7 @@ jobs:
       run: |
         echo "##[set-output name=time;]$(date +%s)"
     - name: Restore cache
-      uses: dhadka/cache@azure-blob-client
+      uses: actions/cache@v2.1.0
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
