@@ -20,7 +20,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=2500 bs=1048576
     - name: Save cache
       uses: actions/cache@v2.1.0
       with:
