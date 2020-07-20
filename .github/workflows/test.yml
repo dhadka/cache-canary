@@ -23,7 +23,7 @@ jobs:
         dd if=/dev/urandom of=test-cache/file.txt count=250 bs=1048576
     - name: Compute hash
       run: |
-        echo ${{ hashFiles(test-cache/file.txt) }}
+        echo ${{ hashFiles("test-cache/file.txt") }}
     - name: Save cache
       uses: dhadka/cache@dhadka/fix-large-cache
       with:
@@ -54,7 +54,7 @@ jobs:
         echo "##[set-output name=time;]$(date +%s)"
     - name: Compute hash
       run: |
-        echo ${{ hashFiles(test-cache/file.txt) }}
+        echo ${{ hashFiles("test-cache/file.txt") }}
     - name: Verify cache files in working directory
       shell: bash
       run: |
