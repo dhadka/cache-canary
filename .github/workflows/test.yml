@@ -20,12 +20,12 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=2500 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=250 bs=1048576
     - name: Compute hash
       run: |
         echo ${{ hashFiles('test-cache/file.txt') }}
     - name: Save cache
-      uses: dhadka/cache@dhadka/fix-large-cache
+      uses: actions/cache@dhadka/cache-1.0.1
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
@@ -44,7 +44,7 @@ jobs:
       run: |
         echo "##[set-output name=time;]$(date +%s)"
     - name: Restore cache
-      uses: dhadka/cache@dhadka/fix-large-cache
+      uses: actions/cache@dhadka/cache-1.0.1
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
