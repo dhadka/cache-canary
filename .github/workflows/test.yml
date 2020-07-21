@@ -20,7 +20,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p test-cache
-        dd if=/dev/urandom of=test-cache/file.txt count=2500 bs=1048576
+        dd if=/dev/urandom of=test-cache/file.txt count=150 bs=1048576
     - name: Compute hash
       run: |
         echo ${{ hashFiles('test-cache/file.txt') }}
