@@ -25,7 +25,7 @@ jobs:
       run: |
         echo ${{ hashFiles('test-cache/file.txt') }}
     - name: Save cache
-      uses: dhadka/cache@dhadka/gnutar
+      uses: actions/cache@v2
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
@@ -44,7 +44,7 @@ jobs:
       run: |
         echo "##[set-output name=time;]$(date +%s)"
     - name: Restore cache
-      uses: dhadka/cache@dhadka/gnutar
+      uses: actions/cache@v2
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
