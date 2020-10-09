@@ -25,7 +25,7 @@ jobs:
       run: |
         echo ${{ hashFiles('test-cache/file.txt') }}
     - name: Save cache
-      uses: actions/cache@v2.1.2
+      uses: actions/cache@v2
       with:
         key: test-${{ runner.os }}-${{ github.run_id }}
         path: test-cache
