@@ -1,12 +1,6 @@
 name: Test Cache
 
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on: [push, pull_request]
 
 jobs:
   # End to end save and restore
